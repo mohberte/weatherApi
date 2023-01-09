@@ -1,0 +1,64 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Home</title>
+  <link rel="stylesheet" type="text/css" media="all" href="../../css/style.css" th:href="@{/css/style.css}" />
+      <script src="../../js/jquery-3.6.1.min.js"></script>
+      <script src="js/jquery-3.6.1.min.js"></script>
+</head>
+<body>
+<h1>
+Current Weather page
+</h1>
+
+<div class = "loadData"  id = "loadData"></div>
+<div class = "cities-grid">
+
+    <div class="city-grid" th:each="city : ${weatherData}">
+    
+    <img th:src="@{/images/{city}.jpg(city=${city.city})}">
+        <div  class="data-grid" th:text="${city.city}" />
+      <div>Temperature: <span th:id="'temperature' + ${city.city}" th:text="${city.temperature}"/> </div>
+      <div>Humidity: <span th:id="'humidity' + ${city.city}" th:text="${city.humidity}"/> </div>
+      <div>Date: <span th:id="'date' + ${city.city}" th:text="${city.stime}"/> </div>
+       <div>subscribe :<input th:id="'sub' + ${city.city}" type="checkbox" name="sub" th:checked="${subbed}" /> </div>
+    </div>
+</div>
+
+</body>
+</html>
+<script>
+var fetch = true;
+var url = "http://localhost:8080/Weather/webapi/weather/";
+function loadDoc() {
+$.ajax(
+{
+    // Post the variable fetch to url.
+    type : 'get',
+    url : "http://localhost:8080/Weather/webapi/weather/",
+    dataType : 'json', // expected returned data format.
+    data : 
+    {
+        'fetch' : fetch
+    },
+    success : function(data)
+    {      
+        data.forEach(city => {
+        
+        	if(document.getElementById("sub" + city.city).checked)
+        		{
+        	
+			        document.getElementById("temperature" + city.city).innerHTML = city.temperature;
+			        document.getElementById("humidity" + city.city).innerHTML = city.humidity;
+			        document.getElementById("humidity" + city.city).innerHTML = city.humidity;
+			        document.getElementById("date" + city.city).innerHTML = city.stime;
+			       }
+        });
+        
+    }
+});
+};
+
+setInterval(function() {
+	loadDoc();
+}, 1000);
+</script>
